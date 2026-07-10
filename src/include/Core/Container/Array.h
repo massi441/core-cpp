@@ -12,7 +12,7 @@ namespace ml {
 template <typename T>
 class Array {
 public:
-    inline const static Array Empty = Array(0);
+    static const Array Empty;
 
     /**
      * Constructs an uninitialized Array. To use only when allocation
@@ -229,7 +229,18 @@ private:
     }
 };
 
+template <typename T>
+const Array<T> Array<T>::Empty = Array(0);
+
 template <>
-bool Array<const char*>::contains(const char* const& item) const;
+inline bool Array<const char*>::contains(const char* const& item) const {
+    for (const char* str : *this) {
+        if (str == item || strcmp(str, item) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 }
