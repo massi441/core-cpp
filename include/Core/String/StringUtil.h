@@ -17,9 +17,18 @@ inline char intAsChar(int num) {
     return static_cast<char>('0' + num);
 }
 
+/**
+ * Copies and null terminates a string up to an exclusive delimiter character.
+ * If no delimiter is found, the entire source string is copied into the destination
+ * @param dest The destination string
+ * @param source The source string
+ * @param delimiter The exclusive delimiter character
+ */
 inline void strdcpy(char* dest, const char* source, char delimiter) {
-    const char* nextDelim = source - 1;
-    while (*++nextDelim != delimiter && (*dest++ = *source++) != '\0');
+    while (*source != delimiter && *source != '\0') {
+        *dest++ = *source++;
+    }
+
     *dest = '\0';
 }
 
