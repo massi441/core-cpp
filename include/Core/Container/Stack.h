@@ -4,6 +4,8 @@
 
 namespace ml {
 
+// TODO: templatize
+
 /**
  * A fixed-size, stack allocated stack for pushing and popping elements onto it
  * @tparam T The type of element stored in the stack
