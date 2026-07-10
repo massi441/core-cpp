@@ -23,4 +23,34 @@ T* placementNew(void* memory, Args&& ...args) {
     return new (memory) T(std::forward<Args>(args)...);
 }
 
+/**
+ * Checks if an object is derived from another class
+ */
+template <typename B, typename D>
+bool instanceOf(B* base) {
+    return dynamic_cast<D*>(base) != nullptr;
+}
+
+template <typename B, typename D>
+bool instanceOf(const B* base) {
+    return dynamic_cast<const D*>(base) != nullptr;
+}
+
+template <typename B, typename D>
+bool tryCast(B* base, D** cast) {
+    *cast = dynamic_cast<D*>(base);
+    return *cast != nullptr;
+}
+
+template <typename B, typename D, typename A>
+bool ifInstanceOf(B* base, A action) {
+    D* derived = dynamic_cast<D*>(base);
+    if (derived) {
+        action(derived);
+        return true;
+    }
+
+    return false;
+}
+
 }
