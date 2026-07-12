@@ -4,6 +4,10 @@
 
 namespace ml {
 
+/**
+ * A container for a circular array
+ * @tparam T The type of element in the array
+ */
 template <typename T>
 class RingArray {
 public:
@@ -28,6 +32,22 @@ public:
         }
 
         return mArray[mCurrent];
+    }
+
+    const T& peekNext() const {
+        if (mCurrent == mArray.lastIdx()) {
+            return mArray[0];
+        }
+
+        return mArray[mCurrent + 1];
+    }
+
+    const T& peekPrevious() const {
+        if (mCurrent == 0) {
+            return mArray.lastIdx();
+        }
+
+        return mArray[mCurrent - 1];
     }
 
     T& current() { return mArray[mCurrent]; }
