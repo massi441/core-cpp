@@ -15,6 +15,11 @@ file(GLOB_RECURSE SOURCES
 
 target_sources(ml_core PRIVATE ${SOURCES})
 
+# Compiler stuff
+if (MSVC)
+    target_compile_options(ml_core PUBLIC /Zc:preprocessor) # for the recursion macros
+endif ()
+
 # Testing stuff
 option(BUILD_CORE_TEST "Enable building the test project" OFF)
 
