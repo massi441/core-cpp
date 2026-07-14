@@ -1,27 +1,23 @@
 #include "Core/IO/FsUtil.h"
 
+namespace fs = std::filesystem;
+
 namespace ml {
 
-std::filesystem::path fromCurrentPath(const char* entryName) {
-    std::filesystem::path path = std::filesystem::current_path();
-    path /= entryName;
-    return path;
-}
-
-bool ensureDirCreated(const std::filesystem::path &path) {
+bool ensureDirCreated(const fs::path &path) {
     std::error_code ec;
-    if (std::filesystem::exists(path, ec)) {
+    if (fs::exists(path, ec)) {
         return true;
     }
 
-    return std::filesystem::create_directory(path, ec);
+    return fs::create_directory(path, ec);
 }
 
-bool clearDirectory(const std::filesystem::path &path) {
+bool clearDirectory(const fs::path &path) {
     std::error_code ec;
 
-    std::vector<std::filesystem::path> removeableEntries;
-    for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(path, ec)) {
+    std::vector<fs::path> removeableEntries;
+    for (const fs::directory_entry& entry : fs::directory_iterator(path, ec)) {
         if (ec) {
             return false;
         }
@@ -29,8 +25,8 @@ bool clearDirectory(const std::filesystem::path &path) {
         removeableEntries.push_back(entry.path());
     }
 
-    for (const std::filesystem::path& removeableEntry : removeableEntries) {
-        std::filesystem::remove_all(removeableEntry, ec);
+    for (const fs::path& removeableEntry : removeableEntries) {
+        fs::remove_all(removeableEntry, ec);
         if (ec) {
             return false;
         }
@@ -39,9 +35,31 @@ bool clearDirectory(const std::filesystem::path &path) {
     return !ec;
 }
 
-bool isExistPath(const std::filesystem::path &path) {
+bool removeDirectory(const std::filesystem::path &path) {
     std::error_code ec;
-    return std::filesystem::exists(path, ec);
+    fs::remove_all(path, ec);
+    return !ec;
+}
+
+bool isExistPath(const fs::path &path) {
+    std::error_code ec;
+    return fs::exists(path, ec);
+}
+
+bool isExistParentPath(const std::filesystem::path& path) {
+    fs::path parentPath = path.parent_path();
+
+    return !parentPath.empty() && ml::isExistPath(parentPath);
+}
+
+// what the f is this shit
+bool createDirectory(const fs::path &path, std::error_code* outEc) {
+    std::error_code fb_ec;
+    std::error_code& ec = outEc ? *outEc : fb_ec;
+
+    fs::create_directory(path, ec);
+
+    return !ec;
 }
 
 }

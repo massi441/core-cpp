@@ -55,6 +55,7 @@ inline std::vector<std::string> split(const std::string& str, char delimiter) {
 }
 
 // TODO: Add case insensitive comparison
+// TODO: Add trimming functions
 
 // inline bool endsWith(const char* source, char end) {
 //     return false;
