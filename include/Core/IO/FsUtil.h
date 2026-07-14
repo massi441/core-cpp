@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef NN_SWITCH
+
 #include <filesystem>
 
 namespace ml {
@@ -26,3 +28,5 @@ bool isExistParentPath(const std::filesystem::path& path);
 bool createDirectory(const std::filesystem::path& path, std::error_code* outEc = nullptr);
 
 }
+
+#endif

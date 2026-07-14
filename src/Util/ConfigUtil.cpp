@@ -1,3 +1,5 @@
+#ifndef NN_SWITCH
+
 #include "Core/Util/ConfigUtil.h"
 
 namespace ml {
@@ -27,3 +29,5 @@ bool parseConfig(const std::string& path, const std::function<void(const std::st
 }
 
 }
+
+#endif

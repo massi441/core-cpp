@@ -1,3 +1,5 @@
+#ifndef NN_SWITCH
+
 #include "Core/IO/FsUtil.h"
 
 namespace fs = std::filesystem;
@@ -63,3 +65,6 @@ bool createDirectory(const fs::path &path, std::error_code* outEc) {
 }
 
 }
+
+#endif
+
