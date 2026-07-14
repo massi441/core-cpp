@@ -19,9 +19,9 @@
         return EnumName##_Strings[static_cast<int>(value)];                                                 \
     }                                                                                                       \
                                                                                                             \
-    constexpr size_t EnumName##_Count = sizeof(EnumName##_Strings) / sizeof(EnumName##_Strings[0]);         \
+    constexpr BaseType EnumName##_Count = sizeof(EnumName##_Strings) / sizeof(EnumName##_Strings[0]);       \
                                                                                                             \
-    inline EnumName EnumName##_FromString (const char* name, EnumName defaultValue) {                       \
+    inline EnumName EnumName##_FromString(const char* name, EnumName defaultValue) {                        \
         for (BaseType i = 0; i < EnumName##_Count; i++) {                                                   \
             if (strcmp(EnumName##_ToString(static_cast<EnumName>(i)), name) == 0) {                         \
                 return static_cast<EnumName>(i);                                                            \
@@ -29,7 +29,18 @@
         }                                                                                                   \
                                                                                                             \
         return defaultValue;                                                                                \
-    }
+    }                                                                                                       \
+                                                                                                            \
+    inline bool EnumName##_FromString(EnumName* outValue, const char* name) {                               \
+        for (BaseType i = 0; i < EnumName##_Count; i++) {                                                   \
+            if (strcmp(EnumName##_Strings[i], name) == 0) {                                                 \
+                *outValue = static_cast<EnumName>(i);                                                       \
+                return true;                                                                                \
+            }                                                                                               \
+        }                                                                                                   \
+                                                                                                            \
+        return false;                                                                                       \
+    }                                                                                                       \
 
 #define META_ENUM(EnumName, ...) \
     META_TYPED_ENUM(EnumName, uint32_t, __VA_ARGS__)
