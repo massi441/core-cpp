@@ -13,7 +13,7 @@ namespace ml {
     }
 
     void CircularCounter::setValue(int newValue) {
-        if (MathHelpers<int>::isInRangeInclusive(newValue, mMin, mMax)) {
+        if (MathHelpers<int>::inRangeIncl(newValue, mMin, mMax)) {
             mValue = newValue;
         }
     }
