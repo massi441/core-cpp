@@ -54,6 +54,8 @@ inline std::vector<std::string> split(const std::string& str, char delimiter) {
     return symbols;
 }
 
+// TODO: Add case insensitive comparison
+
 // inline bool endsWith(const char* source, char end) {
 //     return false;
 // }

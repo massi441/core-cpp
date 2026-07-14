@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Container/Array.h"
-#include "StringUtil.h"
+#include "Core/String/StringUtil.h"
 
 #include <cstring>
 #include <string_view>
@@ -73,7 +73,7 @@ public:
     operator const char*() const { return this->c_str(); }
 
 private:
-    ml::Array<char> mBuf; // potentially use char* instead
+    ml::Array<char> mBuf; // potentially use raw char* instead to avoid - 1 on length
 
     void terminate() {
         mBuf.last() = '\0';
