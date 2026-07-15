@@ -5,7 +5,7 @@
 #include "Core/Util/Recursion.h"
 
 /**
- * A macro for generating an enum with an automatic string lookup function.
+ * A macro for generating an enum with metadata, and automatic string conversion utils
  * Note: This only works with enums that are sequential and starting from 0
  * You are not expected to manually assign values to each enum.
  * @param EnumName The name of the enum
