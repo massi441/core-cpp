@@ -31,12 +31,6 @@ public:
     }
 
     template <typename T>
-    T readRelative(uint offset) {
-        this->skip(offset);
-        return this->read<T>();
-    }
-
-    template <typename T>
     void readDeserializable(T& deserializable) {
         deserializable.deserialize(this);
     }
