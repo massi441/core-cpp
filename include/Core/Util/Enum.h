@@ -17,9 +17,12 @@
     };                                                                                     \
                                                                                            \
     struct EnumName##Data {                                                                \
+        using Enum = EnumName;                                                             \
+                                                                                           \
         static constexpr const char* Strings[] = {                                         \
             EXPAND(FOR_EACH_RECURSE(STR, __VA_ARGS__))                                     \
         };                                                                                 \
+                                                                                           \
         static constexpr BaseType Count = sizeof(Strings) / sizeof(Strings[0]);            \
                                                                                            \
         static constexpr const char* ToString(EnumName value) {                            \
@@ -28,9 +31,11 @@
                                                                                            \
         static inline EnumName FromString(const char* name, EnumName defaultValue) {       \
             for (BaseType i = 0; i < Count; i++) {                                         \
-                if (strcmp(ToString(static_cast<EnumName>(i)), name) == 0)                 \
+                if (strcmp(ToString(static_cast<EnumName>(i)), name) == 0) {               \
                     return static_cast<EnumName>(i);                                       \
+                }                                                                          \
             }                                                                              \
+                                                                                           \
             return defaultValue;                                                           \
         }                                                                                  \
                                                                                            \
@@ -38,10 +43,28 @@
             for (BaseType i = 0; i < Count; i++) {                                         \
                 if (strcmp(Strings[i], name) == 0) {                                       \
                     *outValue = static_cast<EnumName>(i);                                  \
+                                                                                           \
                     return true;                                                           \
                 }                                                                          \
             }                                                                              \
+                                                                                           \
             return false;                                                                  \
+        }                                                                                  \
+                                                                                           \
+        static inline EnumName FromStringSafe(const char* name, EnumName defaultValue) {   \
+            if (name == nullptr) {                                                         \
+                return defaultValue;                                                       \
+            }                                                                              \
+                                                                                           \
+            return FromString(name, defaultValue);                                         \
+        }                                                                                  \
+                                                                                           \
+        static inline bool FromStringSafe(EnumName* outValue, const char* name) {          \
+            if (name == nullptr) {                                                         \
+                return false;                                                              \
+            }                                                                              \
+                                                                                           \
+            return FromString(outValue, name);                                             \
         }                                                                                  \
     };
 
