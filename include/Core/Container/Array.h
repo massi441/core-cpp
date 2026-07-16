@@ -229,10 +229,10 @@ public:
     uint64_t endIdx() const { return mSize; }
     uint64_t lastIdx() const { return mSize - 1; }
 
-    T* begin() { return &mBuffer[0]; }
-    T* end() { return &mBuffer[mSize]; }
-    const T* begin() const { return &mBuffer[0]; }
-    const T* end() const { return &mBuffer[mSize]; }
+    T* begin() { return mBuffer; }
+    T* end() { return mBuffer + mSize; }
+    const T* begin() const { return mBuffer; }
+    const T* end() const { return mBuffer + mSize; }
 
     T& first() { return mBuffer[0]; }
     const T& first() const { return mBuffer[0]; }
