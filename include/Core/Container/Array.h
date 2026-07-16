@@ -34,6 +34,12 @@ public:
         mSize = size;
     }
 
+    explicit Array(T* buffer, uint64_t size) : Array(size) {
+        for (uint64_t i = 0; i < size; i++) {
+            mBuffer[i] = buffer[i];
+        }
+    }
+
     explicit Array(const std::vector<T>& vector) : Array(vector.size()) {
         for (uint64_t i = 0; i < vector.size(); i++) {
             mBuffer[i] = vector[i];
@@ -136,6 +142,38 @@ public:
         return nullptr;
     }
 
+    template <typename F>
+    T* findIf(const F& predicate, uint64_t start, uint64_t end) {
+        T* it = mBuffer + start;
+        T* last = mBuffer + end;
+
+        while (it != last) {
+            if (predicate(*it)) {
+                return it;
+            }
+
+            ++it;
+        }
+
+        return nullptr;
+    }
+
+    template <typename F>
+    const T* findIf(const F& predicate, uint64_t start, uint64_t end) const {
+        const T* it = mBuffer + start;
+        const T* last = mBuffer + end;
+
+        while (it != last) {
+            if (predicate(*it)) {
+                return it;
+            }
+
+            ++it;
+        }
+
+        return nullptr;
+    }
+
     template <typename B>
     requires std::is_convertible_v<T, B>
     bool contains(const B& item) const {
@@ -163,6 +201,22 @@ public:
             if (predicate(item)) {
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    template <typename F>
+    bool containsIf(const F& predicate, uint64_t start, uint64_t end) const {
+        const T* it = mBuffer + start;
+        const T* last = mBuffer + end;
+
+        while (it != last) {
+            if (predicate(*it)) {
+                return true;
+            }
+
+            ++it;
         }
 
         return false;
