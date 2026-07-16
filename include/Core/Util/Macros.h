@@ -15,3 +15,6 @@
 #define NO_HEAP_ALLOC(ClassName)                     \
     void* operator new(size_t) = delete;             \
     void* operator new[](size_t) = delete;           \
+
+#define NO_CONSTRUCTOR(ClassName)                    \
+    ClassName() = delete;

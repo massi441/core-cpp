@@ -94,6 +94,48 @@ public:
         return idx < mSize;
     }
 
+    T* find(const T& item) {
+        for (T& it : *this) {
+            if (it == item) {
+                return &it;
+            }
+        }
+
+        return nullptr;
+    }
+
+    template <typename F>
+    T* findIf(const F& predicate) {
+        for (T& it : *this) {
+            if (predicate(it)) {
+                return &it;
+            }
+        }
+
+        return nullptr;
+    }
+
+    const T* find(const T& item) const {
+        for (const T& it : *this) {
+            if (it == item) {
+                return &it;
+            }
+        }
+
+        return nullptr;
+    }
+
+    template <typename F>
+    const T* findIf(const F& predicate) const {
+        for (const T& it : *this) {
+            if (predicate(it)) {
+                return &it;
+            }
+        }
+
+        return nullptr;
+    }
+
     template <typename B>
     requires std::is_convertible_v<T, B>
     bool contains(const B& item) const {
