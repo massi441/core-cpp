@@ -18,6 +18,7 @@
                                                                                            \
     struct EnumName##Data {                                                                \
         using Enum = EnumName;                                                             \
+        static constexpr const char* Name = #EnumName;                                     \
                                                                                            \
         static constexpr const char* Strings[] = {                                         \
             EXPAND(FOR_EACH_RECURSE(STR, __VA_ARGS__))                                     \
