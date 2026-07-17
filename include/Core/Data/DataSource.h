@@ -3,16 +3,14 @@
 #include "Core/Util/Types.h"
 
 #include <cstdint>
-#include <memory>
+#include <cstddef>
 
 namespace ml {
 
-class DataSource;
-using ScopedDataSource = std::unique_ptr<DataSource>;
-
+template <typename T>
 class DataSourceArray;
-using ScopedDataSourceArray = std::unique_ptr<DataSourceArray>;
 
+template <typename T>
 class DataSource {
 public:
     DataSource() = default;
@@ -25,73 +23,50 @@ public:
     virtual double readDouble(const char* entryName) const = 0;
     virtual const char* readString(const char* entryName) const = 0;
 
-    virtual ScopedDataSource readInner(const char* entryName) const = 0;
+    virtual T readInner(const char* entryName) const = 0;
 
-    virtual ScopedDataSourceArray toArray(const char* entryName) const = 0;
-    virtual ScopedDataSourceArray toArray() const = 0;
+    virtual DataSourceArray<T> toArray(const char* entryName) const = 0;
+    virtual DataSourceArray<T> toArray() const = 0;
 
     virtual ~DataSource() = default;
 };
 
+template <typename T>
 class DataSourceArray {
 public:
-    DataSourceArray() = default;
-
-    virtual size_t size() const = 0;
-    virtual ScopedDataSource next() = 0;
-    virtual bool hasNext() const = 0;
-    virtual ScopedDataSource operator[](size_t i) const = 0;
-    virtual ~DataSourceArray() = default;
-
-    ScopedDataSource safeAt(size_t i) const {
-        if (i >= this->size()) {
-            return nullptr;
-        }
-
-        return this->operator[](i);
+    DataSourceArray(T::ArrayKind array) {
+        mArray = array;
     }
 
     class Iterator {
     public:
-        explicit Iterator(DataSourceArray* array, ScopedDataSource current) {
-            mArray = array;
-            mCurrent = std::move(current);
+        explicit Iterator(T::IteratorKind iterator) {
+            mCurrent = iterator;
         }
 
         Iterator& operator++() {
-            if (mArray->hasNext()) {
-                mCurrent = mArray->next();
-            } else {
-                mCurrent = nullptr;
-            }
-
+            ++mCurrent;
             return *this;
-        }
-
-        DataSource* operator*() const {
-            return mCurrent.get();
         }
 
         bool operator!=(const Iterator& other) const {
             return mCurrent != other.mCurrent;
         }
 
-    private:
-        DataSourceArray* mArray;
-        ScopedDataSource mCurrent;
-    };
-
-    Iterator begin() {
-        if (!this->hasNext()) {
-            return this->end();
+        T operator*() const {
+            return T(*mCurrent);
         }
 
-        return Iterator(this, this->next());
-    }
+    private:
+        T::IteratorKind mCurrent;
+    };
 
-    Iterator end() {
-        return Iterator(this, nullptr);
-    }
+    Iterator begin() const { return Iterator(mArray.begin()); }
+    Iterator end() const { return Iterator(mArray.end()); }
+    size_t size() const { return mArray.size(); }
+
+private:
+    T::ArrayKind mArray;
 };
 
 }
