@@ -8,12 +8,12 @@
 namespace ml {
 
 template <typename T>
-class DataSourceArray;
+class DataReadSourceArray;
 
 template <typename T>
-class DataSource {
+class DataReadSource {
 public:
-    DataSource() = default;
+    DataReadSource() = default;
 
     virtual bool isValid() const = 0;
 
@@ -25,16 +25,16 @@ public:
 
     virtual T readInner(const char* entryName) const = 0;
 
-    virtual DataSourceArray<T> toArray() const = 0;
-    virtual DataSourceArray<T> toArray(const char* entryName) const = 0;
+    virtual DataReadSourceArray<T> toArray() const = 0;
+    virtual DataReadSourceArray<T> toArray(const char* entryName) const = 0;
 
-    virtual ~DataSource() = default;
+    virtual ~DataReadSource() = default;
 };
 
 template <typename T>
-class DataSourceArray {
+class DataReadSourceArray {
 public:
-    DataSourceArray(T::ArrayKind array) {
+    DataReadSourceArray(T::ArrayKind array) {
         mArray = array;
     }
 
