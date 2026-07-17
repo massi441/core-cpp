@@ -4,15 +4,13 @@
 
 namespace ml {
 
-// TODO: templatize
-
 /**
  * A fixed-size, stack allocated stack for pushing and popping elements onto it
  * @tparam T The type of element stored in the stack
  * @tparam Size The size of the stack
  */
 template <typename T, size_t Size>
-class Stack {
+class Stack final {
 public:
     Stack() {
         mTop = mBuf.begin() - 1;

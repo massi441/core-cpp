@@ -11,7 +11,7 @@ namespace ml {
  * A container for a dynamically allocated, but fixed-size C-style array.
  */
 template <typename T>
-class Array : public ml::Container<Array<T>, T> {
+class Array final : public ml::Container<Array<T>, T> {
 public:
     static const Array Empty;
     static constexpr size_t InvalidIndex = UINT64_MAX;
