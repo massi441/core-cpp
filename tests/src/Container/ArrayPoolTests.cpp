@@ -6,9 +6,9 @@
 TEST_CASE("Sanitizes minimum size") {
     // Arrange
     struct SizeSanityTest {
-        ml::byte growPower;
-        ml::ushort minSize;
-        ml::ushort expectedMinSize;
+        byte growPower;
+        ushort minSize;
+        ushort expectedMinSize;
     };
 
     SizeSanityTest testCase = GENERATE(
@@ -37,11 +37,11 @@ TEST_CASE("Sanitizes minimum size") {
 }
 
 TEST_CASE("Rents buffer big enough") {
-    ml::ushort minimumSize = GENERATE(5, 10, 35, 50);
+    ushort minimumSize = GENERATE(5, 10, 35, 50);
 
     ml::FixedByteArrayPool pool = ml::FixedByteArrayPool();
 
-    ml::Array<ml::byte>* buffer = pool.rent(minimumSize);
+    ml::Array<byte>* buffer = pool.rent(minimumSize);
 
     REQUIRE(buffer != nullptr);
     REQUIRE(buffer->size() >= minimumSize);
@@ -49,13 +49,13 @@ TEST_CASE("Rents buffer big enough") {
 
 TEST_CASE("Reuses same buffer after releasing") {
     // Arrange
-    ml::ushort minimumSize = GENERATE(10, 28, 55, 210);
+    ushort minimumSize = GENERATE(10, 28, 55, 210);
 
     ml::FixedByteArrayPool pool = ml::FixedByteArrayPool();
 
     // Act
-    ml::Array<ml::byte>* rentedBuffer = pool.rent(minimumSize);
-    ml::Array<ml::byte>* previousBuffer = rentedBuffer;
+    ml::Array<byte>* rentedBuffer = pool.rent(minimumSize);
+    ml::Array<byte>* previousBuffer = rentedBuffer;
 
     pool.release(rentedBuffer);
     rentedBuffer = pool.rent(minimumSize);
@@ -67,13 +67,13 @@ TEST_CASE("Reuses same buffer after releasing") {
 
 TEST_CASE("Does not reuse same buffer") {
     // Arrange
-    ml::ushort minimumSize = GENERATE(10, 28, 55, 210);
+    ushort minimumSize = GENERATE(10, 28, 55, 210);
 
     ml::FixedByteArrayPool pool = ml::FixedByteArrayPool();
 
     // Act
-    ml::Array<ml::byte>* rentedBuffer = pool.rent(minimumSize);
-    ml::Array<ml::byte>* previousBuffer = rentedBuffer;
+    ml::Array<byte>* rentedBuffer = pool.rent(minimumSize);
+    ml::Array<byte>* previousBuffer = rentedBuffer;
 
     rentedBuffer = pool.rent(minimumSize);
 
@@ -86,9 +86,9 @@ TEST_CASE("Uses overflown buffer") {
     // Arrange
     struct OverflowTest {
         ml::ArrayPoolConfig config;
-        ml::ushort requestedSize;
-        ml::byte maxOverflow;
-        ml::ushort expectedBufferSize;
+        ushort requestedSize;
+        byte maxOverflow;
+        ushort expectedBufferSize;
     };
 
     OverflowTest testCase = GENERATE(
@@ -98,11 +98,11 @@ TEST_CASE("Uses overflown buffer") {
 
     ml::FixedByteArrayPool pool = ml::FixedByteArrayPool(testCase.config);
 
-    ml::Array<ml::byte>* prefilled = pool.rent(testCase.expectedBufferSize);
+    ml::Array<byte>* prefilled = pool.rent(testCase.expectedBufferSize);
     pool.release(prefilled);
 
     // Act
-    ml::Array<ml::byte>* rentedBuffer = pool.rent(testCase.requestedSize, testCase.maxOverflow);
+    ml::Array<byte>* rentedBuffer = pool.rent(testCase.requestedSize, testCase.maxOverflow);
 
     // Assert
     REQUIRE(rentedBuffer != nullptr);

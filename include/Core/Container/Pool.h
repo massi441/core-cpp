@@ -13,7 +13,7 @@ template <typename TPoolType>
 class Pool {
 public:
     virtual TPoolType rent(size_t requestedSize) = 0;
-    virtual TPoolType rent(size_t requestedSize, ml::byte maxOverflowCount) = 0;
+    virtual TPoolType rent(size_t requestedSize, byte maxOverflowCount) = 0;
     virtual bool release(TPoolType buffer) = 0;
     virtual ~Pool() {}
 };

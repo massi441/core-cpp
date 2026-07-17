@@ -5,28 +5,28 @@
 namespace ml {
 
 struct ArrayPoolConfig {
-    ml::ushort arrayMinSize = 16;
-    ml::ushort totalBuckets = 12;
-    ml::ushort maxOverflow = 0;
-    ml::ushort arraysPerBucket = 3;
-    ml::byte arrayGrowPower = 2;
+    ushort arrayMinSize = 16;
+    ushort totalBuckets = 12;
+    ushort maxOverflow = 0;
+    ushort arraysPerBucket = 3;
+    byte arrayGrowPower = 2;
 
-    ArrayPoolConfig& withMinSize(ml::ushort size) {
+    ArrayPoolConfig& withMinSize(ushort size) {
         this->arrayMinSize = size;
         return *this;
     }
 
-    ArrayPoolConfig& withBuckets(ml::ushort buckets) {
+    ArrayPoolConfig& withBuckets(ushort buckets) {
         this->totalBuckets = buckets;
         return *this;
     }
 
-    ArrayPoolConfig& withGrowPower(ml::ushort growPower) {
+    ArrayPoolConfig& withGrowPower(ushort growPower) {
         this->arrayGrowPower = growPower;
         return *this;
     }
 
-    ArrayPoolConfig& withBucketSize(ml::ushort bucketSize) {
+    ArrayPoolConfig& withBucketSize(ushort bucketSize) {
         this->arraysPerBucket = bucketSize;
         return *this;
     }

@@ -20,7 +20,7 @@ public:
     explicit ArrayPool() : ArrayPool(ArrayPoolConfig()) {}
 
     explicit ArrayPool(ArrayPoolConfig config) {
-        ml::ushort arrayMinSize = mathi::max(config.arrayGrowPower, config.arrayMinSize);
+        ushort arrayMinSize = mathi::max(config.arrayGrowPower, config.arrayMinSize);
         ushort minBuckets = mathi::powCeil(config.arrayGrowPower, arrayMinSize);
 
         mConfig.arrayMinSize = std::pow(config.arrayGrowPower, minBuckets);

@@ -22,11 +22,11 @@ public:
 
     static uint64_t size() { return Size; }
 
-    ml::byte* data() { return mBuf; }
-    const ml::byte* cdata() const { return mBuf; }
+    byte* data() { return mBuf; }
+    const byte* cdata() const { return mBuf; }
 
 private:
-    ml::byte mBuf[Size] = {};
+    byte mBuf[Size] = {};
 };
 
 }
