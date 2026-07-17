@@ -25,8 +25,8 @@ public:
 
     virtual T readInner(const char* entryName) const = 0;
 
-    virtual DataSourceArray<T> toArray(const char* entryName) const = 0;
     virtual DataSourceArray<T> toArray() const = 0;
+    virtual DataSourceArray<T> toArray(const char* entryName) const = 0;
 
     virtual ~DataSource() = default;
 };
@@ -63,6 +63,7 @@ public:
 
     Iterator begin() const { return Iterator(mArray.begin()); }
     Iterator end() const { return Iterator(mArray.end()); }
+
     size_t size() const { return mArray.size(); }
 
 private:

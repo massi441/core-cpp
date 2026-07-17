@@ -1,8 +1,9 @@
 #pragma once
 
 #include <cstdint>
-#include <utility>
 #include <vector>
+
+#include "Core/Container/Container.h"
 
 namespace ml {
 
@@ -10,9 +11,10 @@ namespace ml {
  * A container for a dynamically allocated, but fixed-size C-style array.
  */
 template <typename T>
-class Array {
+class Array : public ml::Container<Array<T>, T> {
 public:
     static const Array Empty;
+    static constexpr size_t InvalidIndex = UINT64_MAX;
 
     /**
      * Constructs an uninitialized Array. To use only when allocation
@@ -100,165 +102,6 @@ public:
         return idx < mSize;
     }
 
-    T* find(const T& item) {
-        for (T& it : *this) {
-            if (it == item) {
-                return &it;
-            }
-        }
-
-        return nullptr;
-    }
-
-    template <typename F>
-    T* findIf(const F& predicate) {
-        for (T& it : *this) {
-            if (predicate(it)) {
-                return &it;
-            }
-        }
-
-        return nullptr;
-    }
-
-    const T* find(const T& item) const {
-        for (const T& it : *this) {
-            if (it == item) {
-                return &it;
-            }
-        }
-
-        return nullptr;
-    }
-
-    template <typename F>
-    const T* findIf(const F& predicate) const {
-        for (const T& it : *this) {
-            if (predicate(it)) {
-                return &it;
-            }
-        }
-
-        return nullptr;
-    }
-
-    template <typename F>
-    T* findIf(const F& predicate, uint64_t start, uint64_t end) {
-        T* it = mBuffer + start;
-        T* last = mBuffer + end;
-
-        while (it != last) {
-            if (predicate(*it)) {
-                return it;
-            }
-
-            ++it;
-        }
-
-        return nullptr;
-    }
-
-    template <typename F>
-    const T* findIf(const F& predicate, uint64_t start, uint64_t end) const {
-        const T* it = mBuffer + start;
-        const T* last = mBuffer + end;
-
-        while (it != last) {
-            if (predicate(*it)) {
-                return it;
-            }
-
-            ++it;
-        }
-
-        return nullptr;
-    }
-
-    template <typename B>
-    requires std::is_convertible_v<T, B>
-    bool contains(const B& item) const {
-        for (const T& it : *this) {
-            if (it == item) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if an item is contained within the array using == comparison
-     * @param item The item to check for
-     * @return true if the item is inside the array, false otherwise
-     */
-    bool contains(const T& item) const {
-        return this->contains<T>(item);
-    }
-
-    template <typename F>
-    bool containsIf(const F& predicate) const {
-        for (const T& item : *this) {
-            if (predicate(item)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    template <typename F>
-    bool containsIf(const F& predicate, uint64_t start, uint64_t end) const {
-        const T* it = mBuffer + start;
-        const T* last = mBuffer + end;
-
-        while (it != last) {
-            if (predicate(*it)) {
-                return true;
-            }
-
-            ++it;
-        }
-
-        return false;
-    }
-
-    /**
-     * Computes the index of an item within the array, using == comparison
-     * @param item The item to compute the index of
-     * @return The index of the item if it is found, UINT64_MAX otherwise
-     */
-    uint64_t indexOf(const T& item) const {
-        const T* it = this->begin();
-        const T* end = this->end();
-
-        while (it != end) {
-            if (*it == item) {
-                return it - this->begin();
-            }
-
-            ++it;
-        }
-
-        return UINT64_MAX;
-    }
-
-    /**
-     * Replaces the first occurrence of the target item with the provided value
-     * @param target The target item to replace
-     * @param value The value to replace the target with
-     * @return True if the target was replaced, false otherwise
-     */
-    bool replaceFirst(const T& target, const T& value) {
-        for (T& item : *this) {
-            if (item == target) {
-                item = value;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /**
      * Swaps two elements in the array at the provided indices.
      * Note: The objects are copied during the swap, and no index validation is performed
@@ -329,8 +172,8 @@ template <typename T>
 const Array<T> Array<T>::Empty = Array(0);
 
 template <>
-inline bool Array<const char*>::contains(const char* const& item) const {
-    for (const char* str : *this) {
+inline bool Container<ml::Array<const char*>, const char*>::contains(const char* const& item) const {
+    for (const char* str : *static_cast<const ml::Array<const char*>*>(this)) {
         if (str == item || strcmp(str, item) == 0) {
             return true;
         }
