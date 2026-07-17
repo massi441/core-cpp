@@ -54,6 +54,14 @@ public:
         }
     }
 
+    Array(std::initializer_list<T> list) : Array(list.size()) {
+        uint64_t index = 0;
+
+        for (const T& item : list) {
+            mBuffer[index++] = item;
+        }
+    }
+
     Array(const Array& other) {
         this->copy(other);
     }

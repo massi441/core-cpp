@@ -28,6 +28,10 @@ public:
 
     }
 
+    PointerArray(std::initializer_list<T> list) : mArray(list) {
+
+    }
+
     PointerArray(PointerArray&& other) noexcept {
         mArray = std::move(other.mArray);
     }
