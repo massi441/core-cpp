@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Core/Memory/SpanReader.h"
-#include "Core/Memory/SpanWriter.h"
 #include <string_view>
 
-#include "StringUtil.h"
+#include "Core/Memory/SpanReader.h"
+#include "Core/Memory/SpanWriter.h"
+#include "Core/String/StringUtil.h"
 
 namespace ml {
 

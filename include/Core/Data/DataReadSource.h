@@ -1,15 +1,18 @@
 #pragma once
 
-#include "Core/Util/Types.h"
-
-#include <cstdint>
 #include <cstddef>
+
+#include "Core/Util/Types.h"
 
 namespace ml {
 
 template <typename T>
 class DataReadSourceArray;
 
+/**
+ * A source of data for named values
+ * @tparam T The derived type of DataReadSource, to allow nested read sources
+ */
 template <typename T>
 class DataReadSource {
 public:
@@ -17,8 +20,8 @@ public:
 
     virtual bool isValid() const = 0;
 
-    virtual uint readUInt32(const char* entryName) const = 0;
     virtual int readInt32(const char* entryName) const = 0;
+    virtual uint readUInt32(const char* entryName) const = 0;
     virtual float readFloat(const char* entryName) const = 0;
     virtual double readDouble(const char* entryName) const = 0;
     virtual const char* readString(const char* entryName) const = 0;
@@ -31,10 +34,14 @@ public:
     virtual ~DataReadSource() = default;
 };
 
+/**
+ * An array read from a DataReadSource, where each element in the array can be iterated as a DataReadSource
+ * @tparam T The type of DataReadSource
+ */
 template <typename T>
 class DataReadSourceArray {
 public:
-    DataReadSourceArray(T::ArrayKind array) {
+    explicit DataReadSourceArray(T::ArrayKind array) {
         mArray = array;
     }
 
