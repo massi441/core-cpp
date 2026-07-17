@@ -5,12 +5,12 @@
 namespace ml {
 
 template <typename T>
-class DataWriteSourceArray;
+class DataWriteArray;
 
 template <typename T>
-class DataWriteSource {
+class DataWriter {
 public:
-    DataWriteSource() = default;
+    DataWriter() = default;
 
     virtual void writeInt32(const char* entryName, int value) = 0;
     virtual void writeUInt32(const char* entryName, uint value) = 0;
@@ -20,18 +20,18 @@ public:
 
     virtual T getInner(const char* entryName) const = 0;
 
-    virtual DataWriteSourceArray<T> toArray() const = 0;
-    virtual DataWriteSourceArray<T> toArray(const char* entryName) = 0;
+    virtual DataWriteArray<T> toArray() const = 0;
+    virtual DataWriteArray<T> toArray(const char* entryName) = 0;
 
     virtual bool flush() = 0;
 
-    virtual ~DataWriteSource() = default;
+    virtual ~DataWriter() = default;
 };
 
 template <typename T>
-class DataWriteSourceArray {
+class DataWriteArray {
 public:
-    explicit DataWriteSourceArray(T::ArrayKind array) {
+    explicit DataWriteArray(T::ArrayKind array) {
         mArray = array;
     }
 

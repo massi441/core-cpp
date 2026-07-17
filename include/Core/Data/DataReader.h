@@ -7,16 +7,16 @@
 namespace ml {
 
 template <typename T>
-class DataReadSourceArray;
+class DataReaderArray;
 
 /**
  * A source of data for named values
- * @tparam T The derived type of DataReadSource, to allow nested read sources
+ * @tparam T The derived type of DataReader, to allow nested read sources
  */
 template <typename T>
-class DataReadSource {
+class DataReader {
 public:
-    DataReadSource() = default;
+    DataReader() = default;
 
     virtual bool isValid() const = 0;
 
@@ -28,20 +28,20 @@ public:
 
     virtual T readInner(const char* entryName) const = 0;
 
-    virtual DataReadSourceArray<T> toArray() const = 0;
-    virtual DataReadSourceArray<T> toArray(const char* entryName) const = 0;
+    virtual DataReaderArray<T> toArray() const = 0;
+    virtual DataReaderArray<T> toArray(const char* entryName) const = 0;
 
-    virtual ~DataReadSource() = default;
+    virtual ~DataReader() = default;
 };
 
 /**
- * An array read from a DataReadSource, where each element in the array can be iterated as a DataReadSource
- * @tparam T The type of DataReadSource
+ * An array read from a DataReader, where each element in the array can be iterated as a DataReader
+ * @tparam T The type of DataReader
  */
 template <typename T>
-class DataReadSourceArray {
+class DataReaderArray {
 public:
-    explicit DataReadSourceArray(T::ArrayKind array) {
+    explicit DataReaderArray(T::ArrayKind array) {
         mArray = array;
     }
 
