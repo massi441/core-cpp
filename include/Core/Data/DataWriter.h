@@ -18,10 +18,10 @@ public:
     virtual void writeDouble(const char* entryName, double value) = 0;
     virtual void writeString(const char* entryName, const char* string) = 0;
 
-    virtual T getInner(const char* entryName) const = 0;
+    virtual T getSubWriter(const char* entryName) const = 0;
 
     virtual DataWriteArray<T> toArray() const = 0;
-    virtual DataWriteArray<T> toArray(const char* entryName) = 0;
+    virtual DataWriteArray<T> toArray(const char* entryName) const = 0;
 
     virtual bool flush() = 0;
 

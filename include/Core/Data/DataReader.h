@@ -26,7 +26,7 @@ public:
     virtual double readDouble(const char* entryName) const = 0;
     virtual const char* readString(const char* entryName) const = 0;
 
-    virtual T readInner(const char* entryName) const = 0;
+    virtual T getSubReader(const char* entryName) const = 0;
 
     virtual DataReaderArray<T> toArray() const = 0;
     virtual DataReaderArray<T> toArray(const char* entryName) const = 0;
