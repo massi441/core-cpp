@@ -7,33 +7,54 @@
 
 namespace ml {
 
-/**
- * A container for an array of owned pointers
- * @tparam T The type of object pointed to
- */
 template <typename T>
+using PointerArrayDefaultDeleter = std::default_delete<T>;
+
+/**
+ * A fixed-size array of owned pointers, where each pointer is automatically freed during destruction
+ * @tparam T The type of object pointed to by the pointers in the array
+ * @tparam D The deleter type, defaults to std::default_delete<T>
+ */
+template <typename T, typename D = PointerArrayDefaultDeleter<T>>
 requires (!std::is_pointer_v<T>)
-class PointerArray final : public ml::Container<PointerArray<T>, T*> {
+class PointerArray final : public ml::Container<PointerArray<T, D>, T*> {
     NO_COPY(PointerArray)
 public:
     static constexpr uint64_t InvalidIndex = ml::Array<T>::InvalidIndex;
 
     explicit PointerArray() = default;
 
-    explicit PointerArray(uint64_t size) {
-        mArray = ml::Array<T*>(size);
-    }
-
-    explicit PointerArray(std::vector<T*>&& vector) : mArray(std::move(vector)) {
+    explicit PointerArray(uint64_t size) : mArray(size), mDeleter(D()) {
 
     }
 
-    PointerArray(std::initializer_list<T> list) : mArray(list) {
+    explicit PointerArray(uint64_t size, const D& deleter)
+        : mArray(size), mDeleter(deleter)
+    {
+
+    }
+
+    explicit PointerArray(uint64_t size, D&& deleter)
+        : mArray(size), mDeleter(std::move(deleter))
+    {
+
+    }
+
+    explicit PointerArray(std::vector<T*>&& vector, D&& deleter = D())
+        : mArray(std::move(vector)), mDeleter(std::move(deleter))
+    {
+
+    }
+
+    PointerArray(std::initializer_list<T*> list, D&& deleter = D())
+        : mArray(list), mDeleter(std::move(deleter))
+    {
 
     }
 
     PointerArray(PointerArray&& other) noexcept {
         mArray = std::move(other.mArray);
+        mDeleter = std::move(other.mDeleter);
     }
 
     PointerArray& operator=(PointerArray&& other) noexcept {
@@ -42,18 +63,19 @@ public:
         }
 
         mArray = std::move(other.mArray);
+        mDeleter = std::move(other.mDeleter);
 
         return *this;
     }
 
     void set(uint64_t index, T* ptr) {
-        delete mArray[index];
+        this->free(mArray[index]);
         mArray[index] = ptr;
     }
 
     template <typename ...Args>
     void emplace(uint64_t index, Args&&... args) {
-        delete mArray[index];
+        this->free(mArray[index]);
         mArray[index] = new T(std::forward<Args>(args)...);
     }
 
@@ -68,7 +90,7 @@ public:
 
         for (T*& ptr : mArray) {
             if (ptr == oldPtr) {
-                delete oldPtr;
+                this->free(oldPtr);
                 ptr = newPtr;
                 return true;
             }
@@ -78,14 +100,14 @@ public:
     }
 
     void remove(uint64_t index) {
-        delete mArray[index];
+        this->free(mArray[index]);
         mArray[index] = nullptr;
     }
 
     bool remove(T* item) {
         for (T*& ptr : mArray) {
             if (ptr == item) {
-                delete ptr;
+                this->free(ptr);
                 ptr = nullptr;
                 return true;
             }
@@ -94,26 +116,26 @@ public:
         return false;
     }
 
-    std::unique_ptr<T> release(uint64_t index) {
+    std::unique_ptr<T, D> release(uint64_t index) {
         T* item = mArray[index];
         mArray[index] = nullptr;
-        return std::unique_ptr<T>(item);
+        return std::unique_ptr<T, D>(item, mDeleter);
     }
 
-    std::unique_ptr<T> release(T* item) {
+    std::unique_ptr<T, D> release(T* item) {
         for (T*& ptr : mArray) {
             if (ptr == item) {
                 ptr = nullptr;
-                return std::unique_ptr<T>(item);
+                return std::unique_ptr<T, D>(item, mDeleter);
             }
         }
 
-        return nullptr;
+        return std::unique_ptr<T, D>(nullptr, mDeleter);
     }
 
     ~PointerArray() {
         for (T* ptr : mArray) {
-            delete ptr;
+            this->free(ptr);
         }
     }
 
@@ -141,6 +163,11 @@ public:
 
 private:
     ml::Array<T*> mArray;
+    D mDeleter;
+
+    void free(T* ptr) const {
+        mDeleter(ptr);
+    }
 };
 
 }

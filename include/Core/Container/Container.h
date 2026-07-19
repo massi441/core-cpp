@@ -40,7 +40,7 @@ public:
 
     template <typename F>
     const T* findIf(const F& predicate) const {
-        for (const T& it : *this) {
+        for (const T& it : *static_cast<const TContainer*>(this)) {
             if (predicate(it)) {
                 return &it;
             }
