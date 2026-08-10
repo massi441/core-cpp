@@ -32,7 +32,7 @@ inline void strdcpy(char* dest, const char* source, char delimiter) {
     *dest = '\0';
 }
 
-inline int delimiterOffset(const char* source, char delimiter) {
+inline ptrdiff_t delimiterOffset(const char* source, char delimiter) {
     const char* delimPtr = std::strchr(source, delimiter);
 
     if (delimPtr == nullptr) {

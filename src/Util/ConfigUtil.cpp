@@ -1,10 +1,12 @@
 #ifndef NN_SWITCH
 
 #include "Core/Util/ConfigUtil.h"
+#include <filesystem>
+#include <fstream>
 
 namespace ml {
 
-bool parseConfig(const std::string& path, const std::function<void(const std::string& key, const std::string& value)>& kvParser, char kvDelimiter) {
+bool parseConfig(const std::filesystem::path& path, const std::function<void(const std::string& key, const std::string& value)>& kvParser, char kvDelimiter) {
     std::ifstream file(path);
 
     if (!file.is_open()) {

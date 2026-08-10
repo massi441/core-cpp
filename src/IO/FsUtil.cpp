@@ -64,6 +64,54 @@ bool createDirectory(const fs::path &path, std::error_code* outEc) {
     return !ec;
 }
 
+bool copyRecursiveOverwrite(const std::filesystem::path& source, const std::filesystem::path& dest) {
+    std::error_code ec;
+    fs::copy_options options = fs::copy_options::recursive | fs::copy_options::overwrite_existing;
+    fs::copy(source, dest, options, ec);
+    return !ec;
+}
+
+bool backupDirNumbered(const std::filesystem::path& source, const std::filesystem::path& backupsDest, uint32_t depth) {
+    std::error_code ec;
+    if (ml::isExistPath(backupsDest)) {
+        // remove oldest back up (if present)
+        fs::path maxBackupPath = backupsDest / std::to_string(depth);
+
+        if (ml::isExistPath(maxBackupPath)) {
+            fs::remove_all(maxBackupPath, ec);
+
+            if (ec) {
+                return false;
+            }
+        }
+
+        // shift all back up folder numbers up by one (starting at the second to last backup)
+        for (uint32_t i = depth - 1; i > 0; i--) {
+            fs::path backupPath = backupsDest / std::to_string(i);
+            fs::path newBackupPath = backupsDest / std::to_string(i + 1);
+
+            if (!ml::isExistPath(backupPath)) {
+                continue;
+            }
+
+            fs::rename(backupPath, newBackupPath, ec);
+
+            if (ec) {
+                return false;
+            }
+        }
+    } else if (!fs::create_directory(backupsDest, ec)) {
+        return false;
+    }
+
+    fs::path newestBackupPath = backupsDest / std::to_string(1);
+    fs::copy_options options = fs::copy_options::recursive | fs::copy_options::overwrite_existing;
+
+    fs::copy(source, newestBackupPath, options, ec);
+
+    return !ec;
+}
+
 }
 
 #endif
