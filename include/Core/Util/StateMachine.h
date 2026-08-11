@@ -9,6 +9,8 @@ class StateMachine {
 public:
     using StateMachineFunc = void(T::*)();
 
+    StateMachine() = default;
+
     explicit StateMachine(StateMachineFunc initialState) {
         mCurrentFunc = initialState;
     }
