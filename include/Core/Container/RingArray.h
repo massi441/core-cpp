@@ -44,10 +44,14 @@ public:
 
     const T& peekPrevious() const {
         if (mCurrent == 0) {
-            return mArray.lastIdx();
+            return mArray.last();
         }
 
         return mArray[mCurrent - 1];
+    }
+
+    void reset() {
+        mCurrent = 0;
     }
 
     T& current() { return mArray[mCurrent]; }
