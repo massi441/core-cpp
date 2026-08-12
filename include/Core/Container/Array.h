@@ -127,6 +127,11 @@ public:
         return mSize - 1;
     }
 
+    T& get(uint64_t index) { return mBuffer[index]; }
+    const T& get(uint64_t index) const { return mBuffer[index]; }
+
+    void set(uint64_t index, const T& item) { mBuffer[index] = item; }
+
     T* data() { return mBuffer; }
     const T* cdata() const { return mBuffer; }
     uint64_t size() const { return mSize; }

@@ -13,7 +13,7 @@ class RingArray {
 public:
     explicit RingArray() = default;
 
-    explicit RingArray(uint64_t size) {
+    explicit RingArray(int64_t size) {
         mCurrent = 0;
         mArray = ml::Array<T>(size);
     }
@@ -54,7 +54,7 @@ public:
     T& first() { return mArray.first(); }
     T& last() { return mArray.last(); }
 
-    uint64_t size() const { return mArray.size(); }
+    int64_t size() const { return mArray.size(); }
 
     T* begin() { return mArray.begin(); }
     T* end() { return mArray.end(); }
@@ -62,12 +62,12 @@ public:
     const T* cbegin() const { return mArray.cbegin(); }
     const T* cend() const { return mArray.cend(); }
 
-    T& operator[](uint64_t idx) { return mArray[idx]; }
-    const T& operator[](uint64_t idx) const { return mArray[idx]; }
+    T& operator[](int64_t idx) { return mArray[idx]; }
+    const T& operator[](int64_t idx) const { return mArray[idx]; }
 
 private:
     ml::Array<T> mArray;
-    uint64_t mCurrent;
+    int64_t mCurrent;
 };
 
 }
