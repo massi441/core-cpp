@@ -4,6 +4,8 @@
 
 namespace ml {
 
+// TODO: Use cursor instead of index
+
 /**
  * A container for a circular array
  * @tparam T The type of element in the array

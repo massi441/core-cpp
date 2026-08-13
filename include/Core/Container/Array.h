@@ -110,6 +110,10 @@ public:
         return idx < mSize;
     }
 
+    bool isInBounds(const T* item) const {
+        return item >= mBuffer && item < mBuffer + mSize;
+    }
+
     /**
      * Swaps two elements in the array at the provided indices.
      * Note: The objects are copied during the swap, and no index validation is performed
@@ -134,6 +138,7 @@ public:
 
     T* data() { return mBuffer; }
     const T* cdata() const { return mBuffer; }
+
     uint64_t size() const { return mSize; }
     uint64_t beginIdx() const { return 0; }
     uint64_t endIdx() const { return mSize; }
