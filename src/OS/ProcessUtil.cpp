@@ -1,9 +1,12 @@
 #include "Core/OS/ProcessUtil.h"
 
+#ifdef WIN32
 #include <TlHelp32.h>
+#endif
 
 namespace ml {
 
+#ifndef NN_SWITCH
 ProcessHandle findProcess(const std::wstring& processName, DWORD access) {
     HANDLE snapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (snapShot == INVALID_HANDLE_VALUE) {
@@ -44,5 +47,7 @@ bool tryTerminateProcess(const std::wstring& processName, int returnCode) {
 bool terminateProcess(ProcessHandle handle, int returnCode) {
     return TerminateProcess(handle, returnCode);
 }
+
+#endif
 
 }
