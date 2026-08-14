@@ -7,6 +7,7 @@
 namespace ml {
 
 #ifndef NN_SWITCH
+
 ProcessHandle findProcess(const std::wstring& processName, DWORD access) {
     HANDLE snapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (snapShot == INVALID_HANDLE_VALUE) {
