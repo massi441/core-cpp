@@ -64,10 +64,10 @@ bool createDirectory(const fs::path &path, std::error_code* outEc) {
     return !ec;
 }
 
-bool copyRecursiveOverwrite(const std::filesystem::path& source, const std::filesystem::path& dest) {
+bool copyRecursiveOverwrite(const std::filesystem::path& from, const std::filesystem::path& to) {
     std::error_code ec;
     fs::copy_options options = fs::copy_options::recursive | fs::copy_options::overwrite_existing;
-    fs::copy(source, dest, options, ec);
+    fs::copy(from, to, options, ec);
     return !ec;
 }
 
