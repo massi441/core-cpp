@@ -48,6 +48,11 @@ public:
         return true;
     }
 
+    void reset() {
+        mHead = 0;
+        mCount = 0;
+    }
+
     bool isEmpty() const {
         return mCount == 0;
     }
