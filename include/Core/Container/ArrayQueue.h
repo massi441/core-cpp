@@ -14,8 +14,8 @@ public:
         mArray = ml::Array<T>(size);
         mCount = 0;
     }
-    
-    bool pop(T* outItem) {
+
+    bool dequeue(T* outItem) {
         if (this->isEmpty()) {
             return false;
         }
@@ -32,9 +32,9 @@ public:
     }
 
     template <typename F>
-    bool push(F&& item) {
+    bool enqueue(F&& item) {
         if (this->isFull()) {
-            return false;            
+            return false;
         }
 
         uint64_t index = mHead + mCount;
@@ -48,7 +48,21 @@ public:
         return true;
     }
 
-    void reset() {
+    /**
+     * Resets the queue and resets all currently occupied slots
+     */
+    void reset() requires std::is_default_constructible_v<T> {
+        if constexpr (!std::is_trivially_destructible_v<T>) {
+            for (uint64_t i = 0; i < mCount; i++) {
+                uint64_t index = mHead + i;
+                if (index >= mArray.size()) {
+                    index -= mArray.size();
+                }
+
+                mArray[index] = T();
+            }
+        }
+
         mHead = 0;
         mCount = 0;
     }
@@ -60,11 +74,11 @@ public:
     bool isFull() const {
         return mCount == mArray.size();
     }
-    
+
     uint64_t size() const {
         return mCount;
     }
-    
+
     uint64_t capacity() const {
         return mArray.size();
     }
