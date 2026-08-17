@@ -22,10 +22,7 @@ public:
 
         *outItem = std::move(mArray[mHead]);
 
-        if (++mHead >= mArray.size()) {
-            mHead = 0;
-        }
-
+        mHead = this->calcIndex(mHead + 1);
         mCount--;
 
         return true;
@@ -37,13 +34,8 @@ public:
             return false;
         }
 
-        uint64_t index = mHead + mCount;
-        if (index >= mArray.size()) {
-            index -= mArray.size();
-        }
-
+        mArray[this->calcIndex(mHead + mCount)] = std::forward<F>(item);
         mCount++;
-        mArray[index] = std::forward<F>(item);
 
         return true;
     }
@@ -54,12 +46,7 @@ public:
     void reset() requires std::is_default_constructible_v<T> {
         if constexpr (!std::is_trivially_destructible_v<T>) {
             for (uint64_t i = 0; i < mCount; i++) {
-                uint64_t index = mHead + i;
-                if (index >= mArray.size()) {
-                    index -= mArray.size();
-                }
-
-                mArray[index] = T();
+                mArray[this->calcIndex(mHead + i)] = T();
             }
         }
 
@@ -87,6 +74,14 @@ private:
     ml::Array<T> mArray;
     uint64_t mHead = 0;
     uint64_t mCount = 0;
+
+    uint64_t calcIndex(uint64_t index) const {
+        if (index >= mArray.size()) {
+            index -= mArray.size();
+        }
+
+        return index;
+    }
 };
 
 }
