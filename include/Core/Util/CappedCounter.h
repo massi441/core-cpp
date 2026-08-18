@@ -37,6 +37,10 @@ public:
         return mCount;
     }
 
+    void reset() {
+        mCount = 0;
+    }
+
     bool isFull() const { return mCount >= mMaxValue; }
     bool isNotFull() const { return mCount < mMaxValue; }
     bool isEmpty() const { return mCount == 0; }
