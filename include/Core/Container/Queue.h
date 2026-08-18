@@ -1,16 +1,17 @@
 #pragma once
 
-#include "Core/Container/Array.h"
 #include <utility>
+
+#include "Core/Container/Array.h"
 
 namespace ml {
 
 template <typename T>
-class ArrayQueue {
+class Queue {
 public:
-    ArrayQueue() = default;
+    Queue() = default;
 
-    explicit ArrayQueue(uint64_t size) {
+    explicit Queue(uint64_t size) {
         mArray = ml::Array<T>(size);
         mCount = 0;
     }
@@ -60,6 +61,10 @@ public:
 
     bool isFull() const {
         return mCount == mArray.size();
+    }
+
+    uint64_t count() const {
+        return mCount;
     }
 
     uint64_t size() const {
