@@ -14,6 +14,11 @@ public:
         mCode = code;
     }
 
+    ReturnCode(bool isSuccess) {
+        mCode = !isSuccess; // 0 (false) = success
+        mMessage = "";
+    }
+
     ReturnCode(const char* message, int code = 1) {
         mCode = code;
         mMessage = message;
@@ -54,6 +59,6 @@ private:
     const char* mMessage = "";
 };
 
-const ReturnCode ReturnCode::Success = ReturnCode(0);
+inline const ReturnCode ReturnCode::Success = ReturnCode(0);
 
 }

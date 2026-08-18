@@ -4,6 +4,8 @@
 
 #include <filesystem>
 
+#include "Core/Result/ReturnCode.h"
+
 namespace ml {
 
 template <typename ... Args>
@@ -33,7 +35,7 @@ bool removeDirectory(const std::filesystem::path& path);
 bool isExistPath(const std::filesystem::path& path);
 bool isExistParentPath(const std::filesystem::path& path);
 bool createDirectory(const std::filesystem::path& path, std::error_code* outEc = nullptr);
-bool copyRecursiveOverwrite(const std::filesystem::path& from, const std::filesystem::path& to);
+ml::ReturnCode copyRecursiveOverwrite(const std::filesystem::path& from, const std::filesystem::path& to);
 
 /**
  * Backups a directory by copying numbered versions into a destination directory,

@@ -64,9 +64,14 @@ bool createDirectory(const fs::path &path, std::error_code* outEc) {
     return !ec;
 }
 
-bool copyRecursiveOverwrite(const std::filesystem::path& from, const std::filesystem::path& to) {
+ml::ReturnCode copyRecursiveOverwrite(const std::filesystem::path& from, const std::filesystem::path& to) {
     std::error_code ec;
     fs::copy_options options = fs::copy_options::recursive | fs::copy_options::overwrite_existing;
+
+    if (!ml::clearDirectory(to)) {
+        return "Failed to clear directory before copying";
+    }
+
     fs::copy(from, to, options, ec);
     return !ec;
 }
