@@ -1,4 +1,6 @@
- #pragma once
+#pragma once
+
+#include <utility>
 
 namespace ml {
 
@@ -14,9 +16,19 @@ public:
     }
 
     bool diff(const T& newValue) {
+        return newValue != mCurrent;
+    }
+
+
+    bool updateAndDiff(const T& newValue) {
         bool isNew = newValue != mCurrent;
         mCurrent = newValue;
         return isNew;
+    }
+
+    template <typename F>
+    void update(F&& newValue) {
+        mCurrent = std::forward<F>(newValue);
     }
 
     T& current() { return mCurrent; }
@@ -28,32 +40,5 @@ public:
 private:
     T mCurrent;
 };
-
-// TODO: Convert to DiffableString type
-// template <>
-// inline Diffable<const char*>::Diffable() {
-//     mCurrent = ml::str::EmptyString;
-// }
-//
-// template <>
-// inline Diffable<const char*>::Diffable(const char* const& initial) {
-//     if (initial != nullptr) {
-//         mCurrent = initial;
-//     } else {
-//         mCurrent = ml::str::EmptyString;
-//     }
-// }
-//
-// template <>
-// inline bool Diffable<const char*>::diff(const char* const& newValue) {
-//     if (newValue == nullptr) {
-//         mCurrent = ml::str::EmptyString;
-//         return false;
-//     }
-//
-//     bool isNew = std::strcmp(mCurrent, newValue) != 0;
-//     mCurrent = newValue;
-//     return isNew;
-// }
 
 }
