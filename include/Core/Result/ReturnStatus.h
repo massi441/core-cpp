@@ -24,7 +24,7 @@ public:
 
     template <typename ...Args>
     requires (std::same_as<Args, const char*>&& ...)
-    ReturnStatus(Args... strings) {
+    explicit ReturnStatus(Args... strings) {
         mIsSuccess = false;
         mMessage = ml::concatString(strings...);
     }
