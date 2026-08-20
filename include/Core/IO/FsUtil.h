@@ -4,7 +4,7 @@
 
 #include <filesystem>
 
-#include "Core/Result/ReturnCode.h"
+#include "Core/Result/ReturnStatus.h"
 
 namespace ml {
 
@@ -29,13 +29,13 @@ std::filesystem::path fromParentPath(const std::filesystem::path& basePath, Args
     return path;
 }
 
-bool ensureDirCreated(const std::filesystem::path& path);
-bool clearDirectory(const std::filesystem::path& path);
-bool removeDirectory(const std::filesystem::path& path);
-bool isExistPath(const std::filesystem::path& path);
-bool isExistParentPath(const std::filesystem::path& path);
-bool createDirectory(const std::filesystem::path& path, std::error_code* outEc = nullptr);
-ml::ReturnCode copyRecursiveOverwrite(const std::filesystem::path& from, const std::filesystem::path& to);
+ml::ReturnStatus ensureDirCreated(const std::filesystem::path& path);
+ml::ReturnStatus clearDirectory(const std::filesystem::path& path);
+ml::ReturnStatus removeDirectory(const std::filesystem::path& path);
+ml::ReturnStatus isExistPath(const std::filesystem::path& path);
+ml::ReturnStatus isExistParentPath(const std::filesystem::path& path);
+ml::ReturnStatus createDirectory(const std::filesystem::path& path);
+ml::ReturnStatus copyRecursiveOverwrite(const std::filesystem::path& from, const std::filesystem::path& to);
 
 /**
  * Backups a directory by copying numbered versions into a destination directory,
@@ -45,7 +45,7 @@ ml::ReturnCode copyRecursiveOverwrite(const std::filesystem::path& from, const s
  * @param depth The amount of backups that should be stored in the destination folder
  * @return True if the full operation was successful, false otherwise.
  */
-bool backupDirNumbered(const std::filesystem::path& source, const std::filesystem::path& backupsDest, uint32_t depth);
+ml::ReturnStatus backupDirNumbered(const std::filesystem::path& source, const std::filesystem::path& backupsDest, uint32_t depth);
 
 }
 

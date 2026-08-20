@@ -6,22 +6,24 @@ namespace fs = std::filesystem;
 
 namespace ml {
 
-bool ensureDirCreated(const fs::path &path) {
+ml::ReturnStatus ensureDirCreated(const fs::path &path) {
     std::error_code ec;
     if (fs::exists(path, ec)) {
         return true;
     }
 
-    return fs::create_directory(path, ec);
+    fs::create_directory(path, ec);
+
+    return ml::ReturnStatus(ec);
 }
 
-bool clearDirectory(const fs::path &path) {
+ml::ReturnStatus clearDirectory(const fs::path& path) {
     std::error_code ec;
 
     std::vector<fs::path> removeableEntries;
     for (const fs::directory_entry& entry : fs::directory_iterator(path, ec)) {
         if (ec) {
-            return false;
+            return ml::ReturnStatus("Error while clearing \"", path.string().c_str(), "\" directory: ", ec.message().c_str());
         }
 
         removeableEntries.push_back(entry.path());
@@ -30,53 +32,60 @@ bool clearDirectory(const fs::path &path) {
     for (const fs::path& removeableEntry : removeableEntries) {
         fs::remove_all(removeableEntry, ec);
         if (ec) {
-            return false;
+            return ml::ReturnStatus("Error while clearing \"", path.string().c_str(), "\" directory: ", ec.message().c_str());
         }
     }
 
-    return !ec;
+    return ml::ReturnStatus(ec);
 }
 
-bool removeDirectory(const std::filesystem::path &path) {
+ml::ReturnStatus removeDirectory(const std::filesystem::path& path) {
     std::error_code ec;
     fs::remove_all(path, ec);
-    return !ec;
+
+    return ml::ReturnStatus(ec);
 }
 
-bool isExistPath(const fs::path &path) {
+ml::ReturnStatus isExistPath(const fs::path& path) {
     std::error_code ec;
-    return fs::exists(path, ec);
+    if (!fs::exists(path, ec)) {
+        if (ec) {
+            return ml::ReturnStatus("Error while looking up \"", path.string().c_str(), "\" path: ", ec.message().c_str());
+        }
+
+        return false;
+    }
+
+    return fs::exists(path, ec) || ml::ReturnStatus(ec);
 }
 
-bool isExistParentPath(const std::filesystem::path& path) {
+ml::ReturnStatus isExistParentPath(const std::filesystem::path& path) {
     fs::path parentPath = path.parent_path();
 
     return !parentPath.empty() && ml::isExistPath(parentPath);
 }
 
-// what the f is this shit
-bool createDirectory(const fs::path &path, std::error_code* outEc) {
-    std::error_code fb_ec;
-    std::error_code& ec = outEc ? *outEc : fb_ec;
-
+ml::ReturnStatus createDirectory(const fs::path& path) {
+    std::error_code ec;
     fs::create_directory(path, ec);
-
-    return !ec;
+    return ml::ReturnStatus(ec);
 }
 
-ml::ReturnCode copyRecursiveOverwrite(const std::filesystem::path& from, const std::filesystem::path& to) {
+ml::ReturnStatus copyRecursiveOverwrite(const std::filesystem::path& from, const std::filesystem::path& to) {
     std::error_code ec;
     fs::copy_options options = fs::copy_options::recursive | fs::copy_options::overwrite_existing;
 
-    if (!ml::clearDirectory(to)) {
-        return "Failed to clear directory before copying";
+    ml::ReturnStatus clearStatus = ml::clearDirectory(to);
+    if (!clearStatus) {
+        return ml::ReturnStatus("Failed to clear \"", to.string().c_str(), "\" directory before copy overwrite operation: ", clearStatus.message());
     }
 
     fs::copy(from, to, options, ec);
-    return !ec;
+
+    return ml::ReturnStatus(ec);
 }
 
-bool backupDirNumbered(const std::filesystem::path& source, const std::filesystem::path& backupsDest, uint32_t depth) {
+ml::ReturnStatus backupDirNumbered(const std::filesystem::path& source, const std::filesystem::path& backupsDest, uint32_t depth) {
     std::error_code ec;
     if (ml::isExistPath(backupsDest)) {
         // remove oldest back up (if present)
@@ -86,7 +95,7 @@ bool backupDirNumbered(const std::filesystem::path& source, const std::filesyste
             fs::remove_all(maxBackupPath, ec);
 
             if (ec) {
-                return false;
+                return ml::ReturnStatus("Failed to remove oldest backup \"", maxBackupPath.string().c_str() ,"\" during backup numbered operation: ", ec.message().c_str());
             }
         }
 
@@ -102,11 +111,11 @@ bool backupDirNumbered(const std::filesystem::path& source, const std::filesyste
             fs::rename(backupPath, newBackupPath, ec);
 
             if (ec) {
-                return false;
+                return ml::ReturnStatus("Failed to rename to \"", newBackupPath.string().c_str(), "\" during backup numbered operation: ", ec.message().c_str());
             }
         }
     } else if (!fs::create_directory(backupsDest, ec)) {
-        return false;
+        return ml::ReturnStatus("Failed to create \"", backupsDest.string().c_str(), "\" during backup numbered operation: ", ec.message().c_str());
     }
 
     fs::path newestBackupPath = backupsDest / std::to_string(1);
@@ -114,7 +123,7 @@ bool backupDirNumbered(const std::filesystem::path& source, const std::filesyste
 
     fs::copy(source, newestBackupPath, options, ec);
 
-    return !ec;
+    return ml::ReturnStatus(ec);
 }
 
 }
