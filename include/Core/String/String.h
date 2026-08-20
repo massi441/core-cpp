@@ -46,7 +46,7 @@ public:
         mBuf = ml::Array<char>(strlen + 1);
 
         char* ptr = mBuf.data();
-        ((ptr = stpcpy(ptr, strings)), ...);
+        ((ptr = ml::stpcpy(ptr, strings)), ...);
 
         this->terminate();
     }

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <cstring>
-#include <string>
-#include <vector>
 #include <sstream>
+#include <string>
+#include <string_view>
+#include <vector>
 
 namespace ml {
 
@@ -15,6 +16,16 @@ inline bool streql(const char* s1, const char* s2) {
 
 inline char intAsChar(int num) {
     return static_cast<char>('0' + num);
+}
+
+inline char* stpcpy(char* dst, const char* src) {
+#ifdef WIN32
+    size_t len = std::strlen(src);
+    std::memcpy(dst, src, len + 1);
+    return dst + len;
+#else
+    return ::stpcpy(dst, src);
+#endif
 }
 
 /**
@@ -52,6 +63,19 @@ inline std::vector<std::string> split(const std::string& str, char delimiter) {
     }
 
     return symbols;
+}
+
+template <typename ...Args>
+requires (std::same_as<Args, const char*>&& ...)
+std::string concatString(Args... strings) {
+    size_t strlen = (std::strlen(strings) + ...);
+    std::string str;
+    str.resize(strlen + 1);
+
+    char* ptr = str.data();
+    ((ptr = ml::stpcpy(ptr, strings)), ...);
+
+    return str;
 }
 
 // TODO: Add case insensitive comparison
