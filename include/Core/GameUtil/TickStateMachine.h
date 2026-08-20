@@ -1,13 +1,15 @@
 #pragma once
 
-#include <functional>
+#include <utility>
+
+#include "Core/Util/Types.h"
 
 namespace ml {
 
-template <typename T>
+template <typename T, typename ...Args>
 class TickStateMachine {
 public:
-    using StateFunc = void(T::*)();
+    using StateFunc = void(T::*)(Args ...args);
 
     TickStateMachine() = default;
 
@@ -15,8 +17,9 @@ public:
         mCurrentFunc = initialState;
     }
 
-    void update(T* thisPtr) {
-        std::invoke(mCurrentFunc, thisPtr);
+    template <typename ...F>
+    void update(T* thisPtr, F&& ...args) {
+        (thisPtr->*mCurrentFunc)(std::forward<F>(args) ...);
 
         if (!mIsStateChanged) {
             mTick++;
@@ -61,26 +64,31 @@ private:
     bool mIsStateChanged = false;
 };
 
-#define USE_TICK_STATE_MACHINE(T)                                    \
-    private:                                                         \
-        ml::TickStateMachine<T> mStateMachine;                       \
-                                                                     \
-    public:                                                          \
-        ml::TickStateMachine<T>* getTickStateMachine() {             \
-            return &mStateMachine;                                   \
-        }                                                            \
-                                                                     \
-        const ml::TickStateMachine<T>* getTickStateMachine() const { \
-            return &mStateMachine;                                   \
-        }                                                            \
+#define USE_TICK_STATE_MACHINE(T, ...)                                                          \
+    private:                                                                                    \
+        ml::TickStateMachine<T __VA_OPT__(,) __VA_ARGS__> mStateMachine;                        \
+                                                                                                \
+    public:                                                                                     \
+        ml::TickStateMachine<T __VA_OPT__(,) __VA_ARGS__>* getTickStateMachine() {              \
+            return &mStateMachine;                                                              \
+        }                                                                                       \
+                                                                                                \
+        const ml::TickStateMachine<T __VA_OPT__(,) __VA_ARGS__>* getTickStateMachine() const {  \
+            return &mStateMachine;                                                              \
+        }                                                                                       \
 
-template <typename T>
-void setState(T* t, typename TickStateMachine<T>::StateFunc newState) {
+template <typename T, typename ...Args>
+void updateState(T* t, Args&& ...args) {
+    t->getTickStateMachine()->update(t, std::forward<Args>(args)...);
+}
+
+template <typename T, typename StateFunc>
+void setState(T* t, StateFunc newState) {
     t->getTickStateMachine()->setState(newState);
 }
 
-template <typename T>
-bool isState(const T* t, typename TickStateMachine<T>::StateFunc stateFunc) {
+template <typename T, typename StateFunc>
+bool isState(const T* t, StateFunc stateFunc) {
     return t->getTickStateMachine()->isState(stateFunc);
 }
 
