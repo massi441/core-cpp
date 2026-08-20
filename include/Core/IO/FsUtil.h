@@ -5,6 +5,7 @@
 #include <filesystem>
 
 #include "Core/Result/ReturnStatus.h"
+#include "Core/Result/ReturnValue.h"
 
 namespace ml {
 
@@ -46,6 +47,8 @@ ml::ReturnStatus copyRecursiveOverwrite(const std::filesystem::path& from, const
  * @return True if the full operation was successful, false otherwise.
  */
 ml::ReturnStatus backupDirNumbered(const std::filesystem::path& source, const std::filesystem::path& backupsDest, uint32_t depth);
+
+ml::ReturnValue<uintmax_t> getFileSize(const std::filesystem::path& path);
 
 }
 

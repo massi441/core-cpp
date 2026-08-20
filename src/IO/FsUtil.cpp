@@ -126,6 +126,13 @@ ml::ReturnStatus backupDirNumbered(const std::filesystem::path& source, const st
     return ml::ReturnStatus(ec);
 }
 
+ml::ReturnValue<uintmax_t> getFileSize(const std::filesystem::path& path) {
+    std::error_code ec;
+    uintmax_t size = fs::file_size(path, ec);
+
+    return ml::ReturnValue<uintmax_t>(ec, size);
+}
+
 }
 
 #endif
