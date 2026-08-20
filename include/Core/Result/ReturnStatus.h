@@ -7,7 +7,7 @@
 namespace ml {
 
 /**
- * A wrapper around a function's success status, with an optional status message.
+ * A wrapper around a function's success status, with an optional error message for failures.
  * Acts as an alternative to exceptions.
  */
 class ReturnStatus {
