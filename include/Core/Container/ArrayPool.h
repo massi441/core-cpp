@@ -1,10 +1,10 @@
 #pragma once
 
-#include <cmath>
+#include <bit>
 
-#include "ArrayStack.h"
 #include "Core/Container/Array.h"
 #include "Core/Container/ArrayPoolConfig.h"
+#include "Core/Container/ArrayStack.h"
 #include "Core/Container/Pool.h"
 #include "Core/Util/MathHelpers.h"
 
@@ -20,18 +20,14 @@ public:
     explicit ArrayPool() : ArrayPool(ArrayPoolConfig()) {}
 
     explicit ArrayPool(ArrayPoolConfig config) {
-        ushort arrayMinSize = mathi::max(config.arrayGrowPower, config.arrayMinSize);
-        ushort minBuckets = mathi::powCeil(config.arrayGrowPower, arrayMinSize);
-
-        mConfig.arrayMinSize = std::pow(config.arrayGrowPower, minBuckets);
-        mConfig.totalBuckets = mathus::max(config.totalBuckets, minBuckets);
-        mConfig.arrayGrowPower = config.arrayGrowPower;
-        mConfig.arraysPerBucket = config.arraysPerBucket;
+        mConfig.arrayMinSize = mathul::max(1, config.arrayMinSize);
+        mConfig.totalBuckets = mathul::max(1, config.totalBuckets);
+        mConfig.bucketSize = mathul::max(1, config.bucketSize);
 
         mBuckets = ml::Array<Bucket>(mConfig.totalBuckets);
 
         for (Bucket& bucket : mBuckets) {
-            bucket = Bucket(mConfig.arraysPerBucket);
+            bucket = Bucket(mConfig.bucketSize);
         }
     }
 
@@ -74,7 +70,7 @@ public:
             return new Array<T>(bucketSize);
         }
 
-        uint64_t maxIndex = mathl::min(bucketIndex + maxOverflowCount, mBuckets.maxIndex());
+        uint64_t maxIndex = mathul::min(bucketIndex + maxOverflowCount, mBuckets.maxIndex());
 
         for (uint64_t i = bucketIndex; i <= maxIndex; i++) {
             Bucket& bucket = mBuckets[i];
@@ -126,15 +122,21 @@ private:
     ArrayPoolConfig mConfig;
     ml::Array<Bucket> mBuckets;
 
-    uint64_t calcNearestBucketSize(size_t requestedSize) const {
-        return mathl::max(mConfig.arrayMinSize, std::pow(mConfig.arrayGrowPower, mathf::powCeil(mConfig.arrayGrowPower, requestedSize)));
+    uint64_t calcNearestBucketSize(size_t requestedSize) {
+        if (requestedSize <= mConfig.arrayMinSize) {
+            return mConfig.arrayMinSize;
+        }
+
+        return std::bit_ceil(requestedSize);
     }
 
-    uint64_t calcBucketIndex(size_t bucketSize) const {
-        // min: 9, pow: 3 offset -> (log3(9) - 1) = (2 - 1) = 1
-        uint64_t indexOffset = mathl::logBase(mConfig.arrayGrowPower, mConfig.arrayMinSize) - 1;
-
-        return mathl::logBase(mConfig.arrayGrowPower, bucketSize) - 1 - indexOffset;
+    /**
+     * Returns the bucket index of a normalized size for the array pool
+     * @param size The size, normalized to an exponent of 2
+     * @return The index of the bucket containing arrays of the requested size
+     */
+    uint64_t calcBucketIndex(size_t size) const {
+        return std::bit_width(size) - std::bit_width(mConfig.arrayMinSize);
     }
 };
 
