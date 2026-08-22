@@ -6,6 +6,8 @@ namespace ml {
 
 // TODO: Indexable container subtype
 
+// TODO: Fix CRTP issues on loops
+
 template <typename TContainer, typename T>
 class Container {
 public:
