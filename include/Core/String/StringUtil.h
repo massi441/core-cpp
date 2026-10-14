@@ -12,6 +12,10 @@ inline bool streql(const char* s1, const char* s2) {
     return strcmp(s1, s2) == 0;
 }
 
+inline bool streqlsafe(const char* s1, const char* s2) {
+    return s1 && s2 && strcmp(s1, s2) == 0;
+}
+
 inline char intAsChar(int num) {
     return static_cast<char>('0' + num);
 }
