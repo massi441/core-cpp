@@ -57,8 +57,13 @@ public:
     }
 
     T& current() { return mArray[mCurrent]; }
+    const T& current() const { return mArray[mCurrent]; }
+
     T& first() { return mArray.first(); }
+    const T& first() const { return mArray.first(); }
+
     T& last() { return mArray.last(); }
+    const T& last() const { return mArray.last(); }
 
     int64_t size() const { return mArray.size(); }
 
