@@ -5,9 +5,9 @@
 
 namespace ml {
 
-template <typename TKey, typename TValue>
-bool tryRemove(TValue* outValue, std::unordered_map<TKey, TValue>& map, const TKey& key) {
-    auto it = map.find(key);
+template <typename TMap>
+bool tryRemove(typename TMap::mapped_type* outValue, TMap& map, const typename TMap::key_type& key) {
+    typename TMap::iterator it = map.find(key);
 
     if (it == map.end()) {
         return false;
@@ -17,6 +17,22 @@ bool tryRemove(TValue* outValue, std::unordered_map<TKey, TValue>& map, const TK
     map.erase(it);
 
     return true;
+}
+
+template <typename TMap>
+TMap::mapped_type* tryGet(TMap& map, const typename TMap::key_type& key) {
+    typename TMap::iterator it = map.find(key);
+
+    if (it == map.end()) {
+        return nullptr;
+    }
+
+    return &it->second;
+}
+
+template <typename TMap, typename ...Args>
+TMap::mapped_type& getOrCreate(TMap& map, const typename TMap::key_type& key, Args&& ...args) {
+    return map.try_emplace(key, std::forward<Args>(args)...).first->second;
 }
 
 template <typename T, typename ...Args>
