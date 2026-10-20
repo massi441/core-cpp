@@ -31,8 +31,8 @@ TMap::mapped_type* tryGet(TMap& map, const typename TMap::key_type& key) {
 }
 
 template <typename TMap, typename ...Args>
-TMap::mapped_type& getOrCreate(TMap& map, const typename TMap::key_type& key, Args&& ...args) {
-    return map.try_emplace(key, std::forward<Args>(args)...).first->second;
+TMap::mapped_type* getOrCreate(TMap& map, const typename TMap::key_type& key, Args&& ...args) {
+    return &map.try_emplace(key, std::forward<Args>(args)...).first->second;
 }
 
 template <typename T, typename ...Args>
