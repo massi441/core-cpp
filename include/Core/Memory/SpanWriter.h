@@ -23,6 +23,13 @@ public:
         mCursor += sizeof(T);
     }
 
+    /**
+     * Writes the null terminator at the current cursor, ensuring the cursor advances by only a single byte
+     */
+    void writeNullTerminator() {
+        this->write('\0');
+    }
+
     template <typename T>
     void writeSerializable(const T& serializable) {
         serializable.serialize(this);
