@@ -12,9 +12,9 @@ namespace ml {
  */
 class SpanWriter {
 public:
-    SpanWriter(void* stream) {
-        mStart = static_cast<char*>(stream);
-        mCursor = static_cast<char*>(stream);
+    SpanWriter(void* dest) {
+        mStart = static_cast<char*>(dest);
+        mCursor = static_cast<char*>(dest);
     }
 
     template <typename T>
