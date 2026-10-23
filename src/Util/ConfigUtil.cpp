@@ -1,6 +1,6 @@
 #ifndef NN_SWITCH
 
-#include "Core/Util/ConfigUtil.h"
+#include <ml/Core/Util/ConfigUtil.h>
 
 #include <filesystem>
 #include <fstream>

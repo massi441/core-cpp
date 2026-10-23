@@ -1,6 +1,6 @@
 #ifndef NN_SWITCH
 
-#include "Core/IO/Logger.h"
+#include <ml/Core/IO/Logger.h>
 
 #include <iostream>
 

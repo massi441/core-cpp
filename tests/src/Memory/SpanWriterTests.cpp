@@ -1,7 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
-
-#include "Core/Memory/SpanWriter.h"
-#include "Core/String/StringUtil.h"
+#include <ml/Core/Memory/SpanWriter.h>
+#include <ml/Core/String/StringUtil.h>
 
 TEST_CASE("Writes 3 Integers") {
     // Arrange

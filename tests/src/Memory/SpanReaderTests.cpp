@@ -1,6 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
-
-#include "Core/Memory/SpanReader.h"
+#include <ml/Core/Memory/SpanReader.h>
 
 TEST_CASE("Reads 3 integers") {
     // Arrange
