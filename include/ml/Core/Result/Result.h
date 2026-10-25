@@ -74,6 +74,10 @@ public:
         return mError.value();
     }
 
+    T operator*() {
+        return std::move(mData.value());
+    }
+
 private:
     std::optional<T> mData;
     std::optional<E> mError;
