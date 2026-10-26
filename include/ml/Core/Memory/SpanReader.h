@@ -11,7 +11,7 @@ namespace ml {
  */
 class SpanReader {
 public:
-    SpanReader(const void* stream) {
+    explicit SpanReader(const void* stream) {
         mCursor = static_cast<const ml::sbyte*>(stream);
     }
 

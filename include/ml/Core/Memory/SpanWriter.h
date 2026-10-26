@@ -11,7 +11,7 @@ namespace ml {
  */
 class SpanWriter {
 public:
-    SpanWriter(void* dest) {
+    explicit SpanWriter(void* dest) {
         mStart = static_cast<char*>(dest);
         mCursor = static_cast<char*>(dest);
     }
