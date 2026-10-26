@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdio>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -18,6 +19,46 @@ inline bool streqlsafe(const char* s1, const char* s2) {
 
 inline char intAsChar(int num) {
     return static_cast<char>('0' + num);
+}
+
+/**
+ * Formats a string into a buffer and returns the amount of bytes written.
+ * The amount of bytes written is always less than or equal to the buffer size
+ * passed to this function
+ * @param buffer The buffer to format the string into
+ * @param bufferSize The size of the buffer
+ * @param format The printf-style format string
+ * @param args The arguments for the format string
+ * @return The amount of bytes written into the buffer, clamped to the buffer size and excluding the null terminator
+ */
+inline int vsnprintf(char* buffer, size_t bufferSize, const char* format, va_list args) {
+    if (bufferSize == 0) {
+        return 0;
+    }
+
+    int printSize = std::vsnprintf(buffer, bufferSize, format, args);
+
+    if (printSize < 0) {
+        return 0;
+    }
+
+    if (static_cast<size_t>(printSize) >= bufferSize) {
+        return bufferSize - 1;
+    }
+
+    return printSize;
+}
+
+/**
+ * Variadic version of ml::vsnprintf
+ */
+inline int snprintf(char* buffer, size_t bufferSize, const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    int result = ml::vsnprintf(buffer, bufferSize, format, args);
+    va_end(args);
+
+    return result;
 }
 
 inline char* stpcpy(char* dst, const char* src) {
