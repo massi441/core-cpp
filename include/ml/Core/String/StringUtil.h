@@ -134,7 +134,7 @@ std::string concatString(Args... strings) {
     return str;
 }
 
-inline const char* toString(bool boolean) {
+inline const char* boolStr(bool boolean) {
     return boolean ? "true" : "false";
 }
 
