@@ -6,7 +6,6 @@
 
 namespace ml {
 
-
 /**
  * A fixed-size array of owned pointers, where each pointer is automatically freed during destruction
  * @tparam T The type of object pointed to by the pointers in the array
@@ -130,12 +129,6 @@ public:
         return std::unique_ptr<T, D>(nullptr, mDeleter);
     }
 
-    ~PointerArray() {
-        for (T* ptr : mArray) {
-            this->free(ptr);
-        }
-    }
-
     bool isInBounds(uint64_t index) const {
         return mArray.isInBounds(index);
     }
@@ -157,6 +150,12 @@ public:
 
     T* operator[](uint64_t index) { return mArray[index]; }
     const T* operator[](uint64_t index) const { return mArray[index]; }
+
+    ~PointerArray() {
+        for (T* ptr : mArray) {
+            this->free(ptr);
+        }
+    }
 
 private:
     ml::Array<T*> mArray;
