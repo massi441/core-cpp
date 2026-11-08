@@ -40,6 +40,8 @@ T* placementNew(void* memory, Args&& ...args) {
     return new (memory) T(std::forward<Args>(args)...);
 }
 
+#if __cpp_rtti
+
 /**
  * Checks if an object is derived from another class
  */
@@ -70,9 +72,15 @@ bool ifInstanceOf(B* base, A action) {
     return false;
 }
 
+#endif
+
 template <typename T>
 const char* getTypeId(const T* ptr) {
+#if __cpp_rtti
     return typeid(*ptr).name();
+#else
+    return "NO_RTTI";
+#endif
 }
 
 }
