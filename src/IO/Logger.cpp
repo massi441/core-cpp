@@ -11,11 +11,11 @@ void ConsoleLogger::log(ml::LogLevel level, std::string_view message) {
         ? std::cerr
         : std::cout;
 
-    out << '[' << ml::LogLevelData::ToString(level) << "] " << message << '\n';
+    out << message << '\n';
 }
 
 void FileLogger::log(ml::LogLevel level, std::string_view message) {
-    mFile << '[' << ml::LogLevelData::ToString(level) << "] " << message << '\n';
+    mFile << message << '\n';
 
     if (mAlwaysFlush) {
         mFile << std::flush;

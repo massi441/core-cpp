@@ -7,9 +7,12 @@
 #include <utility>
 #include <vector>
 
+#include "FsUtil.h"
+
 #ifndef NN_SWITCH
 #include <filesystem>
 #include <fstream>
+#include <ml/Core/IO/FsUtil.h>
 #endif
 
 namespace ml {
@@ -63,6 +66,11 @@ public:
 class FileLogger : public ILogger {
 public:
     explicit FileLogger(const std::filesystem::path& path, bool alwaysFlush = true) {
+        // On failure, open() fails too and isOpen() reports it
+        if (const std::filesystem::path parent = path.parent_path(); !parent.empty()) {
+            ml::ensureDirCreated(parent);
+        }
+
         mFile.open(path);
         mAlwaysFlush = alwaysFlush;
     }
