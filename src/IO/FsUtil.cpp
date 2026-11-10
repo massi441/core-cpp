@@ -19,7 +19,7 @@ ml::ReturnStatus ensureDirCreated(const fs::path& path) {
         return ml::ReturnStatus::Success();
     }
 
-    fs::create_directory(path, ec);
+    fs::create_directories(path, ec);
 
     return ml::ReturnStatus::FromErrorCode(ec);
 }
@@ -71,7 +71,7 @@ ml::ReturnStatus isExistPath(const fs::path& path) {
 ml::ReturnStatus isExistParentPath(const std::filesystem::path& path) {
     fs::path parentPath = path.parent_path();
 
-    return !parentPath.empty()
+    return parentPath.empty()
         ? ml::ReturnStatus::Success()
         : ml::isExistPath(parentPath);
 }
