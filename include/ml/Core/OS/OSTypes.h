@@ -4,6 +4,8 @@
 #include <Windows.h>
 #endif
 
+// TODO: Get rid of this shit
+
 namespace ml {
 
 #ifdef WIN32

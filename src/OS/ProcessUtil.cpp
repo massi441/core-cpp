@@ -12,11 +12,11 @@ namespace ml {
 
 // TODO: Add process iterator
 
-ProcessHandle openProcess(ProcessId pid, DWORD desiredAccess) {
+HANDLE openProcess(ProcessId pid, DWORD desiredAccess) {
     return OpenProcess(desiredAccess, FALSE, pid);
 }
 
-ProcessHandle findProcess(const std::wstring& processName, DWORD access) {
+HANDLE findProcess(const std::wstring& processName, DWORD access) {
     HANDLE snapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (snapShot == INVALID_HANDLE_VALUE) {
         return nullptr;
@@ -75,7 +75,7 @@ bool tryTerminateProcess(const std::wstring& processName, int returnCode) {
     return TerminateProcess(handle, returnCode);
 }
 
-bool terminateProcess(ProcessHandle handle, int returnCode) {
+bool tryTerminateProcess(ProcessHandle handle, int returnCode) {
     return TerminateProcess(handle, returnCode);
 }
 
@@ -95,7 +95,7 @@ ml::ReturnValue<int> tryTerminateAllProcessInstance(const std::wstring& processN
                     return ml::ReturnValue<int>::Failure("Failed to open running instance of process");
                 }
 
-                if (!ml::terminateProcess(handle, returnCode)) {
+                if (!ml::tryTerminateProcess(handle, returnCode)) {
                     return ml::ReturnValue<int>::Failure("Failed to terminate running instance of process");
                 }
             }
